@@ -7,7 +7,6 @@
 pip uninstall torch
 
 # Clone the repository
-git clone https://github.com/trytoYH/vllm_test.git
 cd vllm_test
 
 # Install the package in editable mode with a default timeout of 60 seconds
