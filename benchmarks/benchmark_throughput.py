@@ -42,7 +42,7 @@ def sample_requests(
         output_len = len(completion_token_ids[i])
         tokenized_dataset.append((prompts[i], prompt_token_ids[i], output_len))
 
-    # Filter out too long sequences.
+    # Filter sequences.
     filtered_dataset: List[Tuple[str, int, int]] = []
     for prompt, prompt_token_ids, output_len in tokenized_dataset:
         prompt_len = len(prompt_token_ids)
@@ -92,8 +92,15 @@ def run_vllm(
 
     start = time.time()
     # FIXME(woosuk): Do use internal method.
-    llm._run_engine(use_tqdm=True)
+    outputs = llm._run_engine(use_tqdm=True)
     end = time.time()
+
+    total_output_tokens = 0
+    for output in outputs:
+        output_tokens = tokenizer.encode(output)
+        total_output_tokens += len(output_tokens)
+    avg_output_token_len = total_output_tokens / len(outputs)
+    print(f"average output token length : {avg_output_token_len}  ")
     return end - start
 
 
