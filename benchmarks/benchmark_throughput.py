@@ -175,7 +175,7 @@ def main(args: argparse.Namespace):
     if args.backend == "vllm":
         elapsed_time = run_vllm(
             requests, args.model, args.tokenizer, args.tensor_parallel_size,
-            args.seed, args.n, args.use_beam_search, args.trust_remote_code)
+            args.seed, args.n, args.use_beam_search, args.trust_remote_code, args.print_avg_output_len)
     elif args.backend == "hf":
         assert args.tensor_parallel_size == 1
         elapsed_time = run_hf(
