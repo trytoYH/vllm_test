@@ -99,8 +99,7 @@ def run_vllm(
     for output in outputs:
         # outputs : List[RequestOutput]
         # output : RequestOutput
-        output_tokens = tokenizer.encode(output.prompt)
-        total_output_tokens += len(output_tokens)
+        total_output_tokens += len(output.outputs[0].token_ids)
     avg_output_token_len = total_output_tokens / len(outputs)
     print(f"average output token length : {avg_output_token_len}  ")
     return end - start
