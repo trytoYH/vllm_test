@@ -64,6 +64,7 @@ def run_vllm(
     n: int,
     use_beam_search: bool,
     trust_remote_code: bool,
+    print_avg_output_len: bool,
 ) -> float:
     llm = LLM(
         model=model,
@@ -95,13 +96,12 @@ def run_vllm(
     outputs = llm._run_engine(use_tqdm=True)
     end = time.time()
 
-    total_output_tokens = 0
-    for output in outputs:
-        # outputs : List[RequestOutput]
-        # output : RequestOutput
-        total_output_tokens += len(output.outputs[0].token_ids)
-    avg_output_token_len = total_output_tokens / len(outputs)
-    print(f"average output token length : {avg_output_token_len}  ")
+    if print_avg_output_len:
+        total_output_tokens = 0
+        for output in outputs:
+            total_output_tokens += len(output.outputs[0].token_ids)
+        avg_output_token_len = total_output_tokens / len(outputs)
+        print(f"average output token length : {avg_output_token_len}")
     return end - start
 
 
@@ -211,6 +211,9 @@ if __name__ == "__main__":
     parser.add_argument('--trust-remote-code',
                         action='store_true',
                         help='trust remote code from huggingface')
+    ## only in vllm backend. Should be implement HF backend.
+    parser.add_argument('--print-avg-output-len', type=str, default=False,
+                        help="print avg output token length at vllm backend")
     args = parser.parse_args()
 
     if args.backend == "vllm":
